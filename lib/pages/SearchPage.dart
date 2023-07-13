@@ -16,7 +16,7 @@ class SearchPage extends StatefulWidget {
 
 class _SearchPageState extends State<SearchPage> {
   TextEditingController searchController = TextEditingController();
-  FutureOr<QuerySnapshot>? searchResult;
+ var searchResult;
 
   void contorlSearching(String searchTxt) {
     FutureOr<QuerySnapshot> allUsers = userReference
@@ -71,11 +71,12 @@ class _SearchPageState extends State<SearchPage> {
 
   Widget resultsScreen() {
     return FutureBuilder(
-      future: searchResult,
+      future: searchResult(),
       builder: (context, AsyncSnapshot snapshot) {
         List<UserResult> searchUsersResult = [];
-        if (snapshot.hasData) {
+        if (snapshot.connectionState == ConnectionState.done) {
           for (var user in snapshot.data) {
+            print(snapshot.data);
             User eachUser = User.fromDocument(user);
             UserResult userResult = UserResult(eachUser: eachUser);
             searchUsersResult.add(userResult);

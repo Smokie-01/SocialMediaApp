@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:social_media/pages/HomePage.dart';
 import 'package:social_media/widgets/HeaderWidget.dart';
 import 'package:social_media/widgets/PostWidget.dart';
-import 'package:social_media/widgets/ProgressWidget.dart';
 import '../models/user.dart';
 
 class TimeLinePage extends StatefulWidget {
@@ -36,7 +35,7 @@ class _TimeLinePageState extends State<TimeLinePage> {
             username: doc.data()['username'],
             description: doc.data()['description '],
             imageURL: doc.data()['image_url'],
-            likes: doc.data()['Likes'],
+            likes: 0,
             loaction: doc.data()['Location'],
             profileImage: doc.data()['profile_Image']);
 
@@ -54,21 +53,15 @@ class _TimeLinePageState extends State<TimeLinePage> {
           children: [
             Expanded(
               child: ListView.builder(
-                reverse: true,
                   itemCount: postList.length,
-                  itemBuilder: (context, index) {
-                    if (postList.isNotEmpty) {
+                  itemBuilder: (context, index) {               
                       return PostWidget(
-                        
                         username: postList[index].username,
                         profileImage: postList[index].profileImage,
                         postImageUrl: postList[index].imageURL,
                         location: postList[index].loaction,
                         postDescription: postList[index].description,
                       );
-                    } else {
-                      return circularProgress();
-                    }
                   }),
             ),
           ],

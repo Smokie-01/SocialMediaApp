@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 
@@ -38,18 +39,12 @@ class _UploadPageState extends State<UploadPage> {
     locationController.text = specificAdress;
   }
 
-  // Future<String> getTargetPath() async {
-  //   final tDirectory = await getTemporaryDirectory();
-  //   final path = tDirectory.path;
-  //   return path;
-  // }
-
-  Future contorlUploadingAndSave() async {
+   contorlUploadingAndSave() async {
     setState(() {
       isUploading = true;
     });
 
-    String downloadURL = await uploadPhoto(_image);
+    FutureOr<String> downloadURL = uploadPhoto(_image);
     savePostInfoandDesc(
         url: downloadURL,
         location: locationController.text,
@@ -68,7 +63,7 @@ class _UploadPageState extends State<UploadPage> {
 
 
   savePostInfoandDesc(
-      {required String url,
+      {required FutureOr<String> url,
       required String location,
       required String description}) {
     final uniqueImageId = DateTime.now().millisecondsSinceEpoch.toString();
@@ -89,12 +84,12 @@ class _UploadPageState extends State<UploadPage> {
     });
   }
 
-  Future<String> uploadPhoto(File? image) async {
+  FutureOr<String> uploadPhoto(File? image) async {
     UploadTask storageUploadTask = storageRefrence
         .child("post_${DateTime.now().toString()}.jpg")
         .putFile(image!);
-    TaskSnapshot storageTaskSnapshot = await storageUploadTask;
-    final downloadURL = await storageTaskSnapshot.ref.getDownloadURL();
+    UploadTask storageTaskSnapshot = storageUploadTask;
+    final downloadURL = await storageTaskSnapshot.snapshot.ref.getDownloadURL();
     return downloadURL;
   }
 
@@ -189,7 +184,7 @@ class _UploadPageState extends State<UploadPage> {
           TextButton(
               // onPressed: isUploading ? null : contorlUploadingAndSave,
               onPressed: () async  {
-                isUploading ? null : await contorlUploadingAndSave().then((_) =>  (){});
+                isUploading ? null : await contorlUploadingAndSave();
                
               },
               child: const Text("Share",

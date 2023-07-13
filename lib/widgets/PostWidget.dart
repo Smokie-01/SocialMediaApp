@@ -1,6 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:social_media/widgets/commentsWidget.dart';
 
 import '../pages/HomePage.dart';
 class Post {
@@ -9,7 +10,7 @@ class Post {
   final String username;
   final String description;
   final String imageURL;
-  final dynamic likes;
+  final int likes;
   final String loaction;
   final String profileImage;
 
@@ -62,8 +63,6 @@ class _PostWidgetState extends State<PostWidget> {
 
   @override
   Widget build(BuildContext context) {
-
-
     final mq = MediaQuery.of(context).size;
     return Card(
       elevation: 2.0,
@@ -77,7 +76,7 @@ class _PostWidgetState extends State<PostWidget> {
             title: Text(widget.username, style: TextStyle(color: Colors.white)),
             subtitle: Row(
               children: [
-                Icon(
+               const  Icon(
                   Icons.location_pin,
                   color: Colors.amber,
                 ),
@@ -95,7 +94,7 @@ class _PostWidgetState extends State<PostWidget> {
             ),
           ),
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+            padding:  EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -107,17 +106,22 @@ class _PostWidgetState extends State<PostWidget> {
                            initialLikes++;
                         });
                       },
-                      child: Icon(Icons.favorite, color: Colors.red)),
-                    SizedBox(width: 6),
+                      child:  Icon(Icons.favorite, color: Colors.red)),
+                     SizedBox(width: 6),
                     Text(initialLikes.toString(), style: TextStyle(color: Colors.white)),
                   ],
                 ),
                 Row(
-                  children: [
+                  children:  [
                     Icon(Icons.comment),
                     SizedBox(width: 4.0),
-                    Text('4    comments',
-                        style: TextStyle(color: Colors.white)),
+                    GestureDetector(
+                      onTap: (){
+                      YourPostDetailsScreen();
+                      },
+                      child: Text('comments',
+                          style: TextStyle(color: Colors.white)),
+                    ),
                   ],
                 ),
               ],
@@ -125,7 +129,7 @@ class _PostWidgetState extends State<PostWidget> {
           ),
           Text(
             " Post-Description :  ${widget.postDescription}",
-            style: TextStyle(color: Colors.white),
+            style:const TextStyle(color: Colors.white),
           )
         ],
       ),

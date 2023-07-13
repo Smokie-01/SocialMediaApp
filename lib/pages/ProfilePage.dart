@@ -24,9 +24,10 @@ class _ProfilePageState extends State<ProfilePage> {
   final String? currentUserOnlineID = currentUser!.id;
 
   createProfileTopView() {
+    var future = userReference.doc(widget.userProfileId).get();
     return FutureBuilder(
-      future: userReference.doc(widget.userProfileId).get(),
-      builder: (context, snapshot) {
+      future: future  ,
+      builder: (context, AsyncSnapshot snapshot) {
         if (snapshot.hasData) {
           User user = User.fromDocument(snapshot.data!);
           final mq = MediaQuery.of(context).size;
