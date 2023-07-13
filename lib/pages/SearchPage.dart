@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
@@ -14,10 +16,10 @@ class SearchPage extends StatefulWidget {
 
 class _SearchPageState extends State<SearchPage> {
   TextEditingController searchController = TextEditingController();
-  Future<QuerySnapshot>? searchResult;
+  FutureOr<QuerySnapshot>? searchResult;
 
   void contorlSearching(String searchTxt) {
-    Future<QuerySnapshot> allUsers = userReference
+    FutureOr<QuerySnapshot> allUsers = userReference
         .where("profileName", isGreaterThanOrEqualTo: searchTxt)
         .get();
     setState(() {
@@ -70,10 +72,10 @@ class _SearchPageState extends State<SearchPage> {
   Widget resultsScreen() {
     return FutureBuilder(
       future: searchResult,
-      builder: (context, snapshot) {
+      builder: (context, AsyncSnapshot snapshot) {
         List<UserResult> searchUsersResult = [];
         if (snapshot.hasData) {
-          for (var user in snapshot.data!.docs) {
+          for (var user in snapshot.data) {
             User eachUser = User.fromDocument(user);
             UserResult userResult = UserResult(eachUser: eachUser);
             searchUsersResult.add(userResult);
