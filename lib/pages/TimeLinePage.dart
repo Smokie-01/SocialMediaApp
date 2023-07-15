@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:social_media/pages/HomePage.dart';
 import 'package:social_media/widgets/HeaderWidget.dart';
 import 'package:social_media/widgets/PostWidget.dart';
+import 'package:social_media/widgets/ProgressWidget.dart';
+import '../models/postModel.dart';
 import '../models/user.dart';
 
 class TimeLinePage extends StatefulWidget {
@@ -15,19 +17,24 @@ class TimeLinePage extends StatefulWidget {
 }
 
 class _TimeLinePageState extends State<TimeLinePage> {
+
+  
   List<Post> postList = [];
   @override
+  
   void initState() {
     super.initState();
     fetchPost();
   }
 
   void fetchPost() {
+    print("fecth called");
     userPostReference
         .doc('AllPosts')
         .collection("userPost",)
         .get()
         .then((userPosts) {
+          
       for (var doc in userPosts.docs) {
         Post post = Post(
             postID: doc.data()['post_id'],
@@ -40,6 +47,8 @@ class _TimeLinePageState extends State<TimeLinePage> {
             profileImage: doc.data()['profile_Image']);
 
         postList.add(post);
+
+      
       }
     });
   }
@@ -52,17 +61,33 @@ class _TimeLinePageState extends State<TimeLinePage> {
         body: Column(
           children: [
             Expanded(
-              child: ListView.builder(
-                  itemCount: postList.length,
-                  itemBuilder: (context, index) {               
-                      return PostWidget(
-                        username: postList[index].username,
-                        profileImage: postList[index].profileImage,
-                        postImageUrl: postList[index].imageURL,
-                        location: postList[index].loaction,
-                        postDescription: postList[index].description,
-                      );
-                  }),
+              child: StreamBuilder(
+                stream:  userPostReference.doc('AllPosts').collection("userPost").snapshots(),
+                builder: (context, snapshot) {
+                  print("stream builder called");
+                  if(snapshot.hasData){
+                   print(snapshot.data!.docs.length);
+
+                  return  ListView.builder(
+                    itemCount: postList.length,
+                    itemBuilder: (context, index) {  
+                         snapshot.data!.docs.map((docs) {  
+                        PostWidget(
+                          username: docs.data()['username'],
+                          profileImage: docs.data()['profile_Image'],
+                          postImageUrl: docs.data()['image_url'],
+                          location: docs.data()['Location'],
+                          postDescription: docs.data()['description'],
+                        );
+                      } ,
+                      );          
+                   return Center(child: circularProgress()); 
+                   },
+                  );
+                 }
+               return const Center(child: Text('There is No data'));}
+              
+              ),
             ),
           ],
         ));
