@@ -1,16 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:social_media/models/user.dart';
-
-class Comment {
-String comment;
-User user;
-  Comment({
-    required this.comment,
-    required this.user,
-  });
-}
-
-
+import '../models/commentsModel.dart';
 class YourPostDetailsScreen extends StatelessWidget {
   void showComments(BuildContext context) {
   List<Comment> comments = [];

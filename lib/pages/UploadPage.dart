@@ -7,6 +7,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:social_media/models/user.dart';
 import 'package:social_media/pages/HomePage.dart';
 import 'package:social_media/widgets/ProgressWidget.dart';
@@ -44,7 +45,7 @@ class _UploadPageState extends State<UploadPage> {
       isUploading = true;
     });
 
-    FutureOr<String> downloadURL = uploadPhoto(_image);
+    FutureOr<String> downloadURL = await uploadPhoto(_image);
     savePostInfoandDesc(
         url: downloadURL,
         location: locationController.text,
@@ -76,7 +77,7 @@ class _UploadPageState extends State<UploadPage> {
       "owner_id": widget.user.id,
       "timeStamp": time,
       "username": widget.user.userName,
-      "Likes": {},
+      "Likes": 0,
       "description ": description,
       "Location": location,
       "image_url": url,
@@ -85,12 +86,11 @@ class _UploadPageState extends State<UploadPage> {
   }
 
   FutureOr<String> uploadPhoto(File? image) async {
-    UploadTask storageUploadTask = storageRefrence
-        .child("post_${DateTime.now().toString()}.jpg")
-        .putFile(image!);
-    UploadTask storageTaskSnapshot = storageUploadTask;
-    final downloadURL = await storageTaskSnapshot.snapshot.ref.getDownloadURL();
-    return downloadURL;
+    final storageRef =  FirebaseStorage.instance.ref().child('Images/');
+   final UploadTask uploadTask = storageRef.putFile(image!);
+    final TaskSnapshot snapshot = await uploadTask;
+final downloadURL = await snapshot.ref.getDownloadURL();
+return downloadURL;
   }
 
   Widget takeImageFromCamera() {

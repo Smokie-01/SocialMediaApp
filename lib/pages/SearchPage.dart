@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
@@ -71,11 +70,11 @@ class _SearchPageState extends State<SearchPage> {
 
   Widget resultsScreen() {
     return FutureBuilder(
-      future: searchResult(),
-      builder: (context, AsyncSnapshot snapshot) {
+      future: searchResult,
+      builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
         List<UserResult> searchUsersResult = [];
         if (snapshot.connectionState == ConnectionState.done) {
-          for (var user in snapshot.data) {
+          for (var user in snapshot.data!.docs) {
             print(snapshot.data);
             User eachUser = User.fromDocument(user);
             UserResult userResult = UserResult(eachUser: eachUser);
